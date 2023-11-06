@@ -1,0 +1,33 @@
+
+
+version: '3'
+services:
+
+  postgres:
+    image: postgres:11-alpine
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: olasoj
+      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_DB : drone_delivery_app
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+#      - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+    #      - ~/.docker-conf/postgres/log/:/var/log/postgres
+
+    networks:
+      - gen-rou
+
+  app:
+    build: ./
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - gen-rou
+
+networks:
+  gen-rou:
+    driver: bridge
